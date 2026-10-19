@@ -1,0 +1,94 @@
+# Spec as published at https://tdd.demo.reaktivate.com/api-docs/ (extracted verbatim from swagger-ui-init.js).
+# Not edited on purpose: see README → "API notes".
+openapi: 3.0.0
+info:
+  description: Reaktivate-books API
+  license:
+    name: Unlicense
+  title: Reeaktivate demo API service
+  version: 0.0.1
+paths:
+  /v1/books/{user}/:
+    get:
+      operationId: AuthGetAllBooks
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+      description: Get all
+      parameters:
+        - description: ""
+          in: path
+          name: user
+          required: true
+          schema:
+            type: string
+    post:
+      operationId: AuthAddBook
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+      description: Add new
+      parameters:
+        - description: ""
+          in: path
+          name: user
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+  /v1/books/{user}/private:
+    get:
+      operationId: AuthGetPrivateBooks
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+      description: Get private
+      parameters:
+        - description: ""
+          in: path
+          name: user
+          required: true
+          schema:
+            type: string
+  /v1/books/{user}/reset:
+    put:
+      operationId: AuthClean
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+      description: Add new
+      parameters:
+        - description: ""
+          in: path
+          name: user
+          required: true
+          schema:
+            type: string
+components:
+  securitySchemes:
+    SessionBasedAuthentication:
+      description: Session token
+      type: apiKey
+      in: header
+      name: token
