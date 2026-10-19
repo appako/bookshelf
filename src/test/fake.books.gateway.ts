@@ -3,16 +3,16 @@ import { vi } from 'vitest';
 import type { BookDto, NewBookDto, StatusResponseDto } from '~/features/books/books.dto';
 import { BooksGateway } from '~/features/books/books.gateway';
 
-export const SEED_BOOKS: BookDto[] = [
-    { id: 111, name: 'Wind in the willows', ownerId: 'postnikov', author: 'Kenneth Graeme' },
-    { id: 121, name: 'I, Robot', ownerId: 'postnikov', author: 'Isaac Asimov' },
-    { id: 131, name: 'The Hobbit', ownerId: 'postnikov', author: 'Jrr Tolkein' },
-];
-
 export class FakeBooksGateway implements Pick<BooksGateway, keyof BooksGateway> {
+    private static readonly SEED_BOOKS: BookDto[] = [
+        { id: 111, name: 'Wind in the willows', ownerId: 'postnikov', author: 'Kenneth Graeme' },
+        { id: 121, name: 'I, Robot', ownerId: 'postnikov', author: 'Isaac Asimov' },
+        { id: 131, name: 'The Hobbit', ownerId: 'postnikov', author: 'Jrr Tolkein' },
+    ];
+
     readonly added: NewBookDto[] = [];
 
-    getAll = vi.fn(async (_user: string): Promise<unknown> => [...SEED_BOOKS, ...this.added]);
+    getAll = vi.fn(async (_user: string): Promise<unknown> => [...FakeBooksGateway.SEED_BOOKS, ...this.added]);
 
     getPrivate = vi.fn(async (_user: string): Promise<unknown> => [...this.added]);
 

@@ -2,15 +2,15 @@ import { action, computed, makeObservable, observable } from 'mobx';
 import { singleton } from 'tsyringe';
 import { AppStorage } from '~/shared/storage/app.storage';
 
-const NICKNAME_KEY = 'bookshelf.nickname';
-
 @singleton()
 export class AuthStore {
+    private static readonly NICKNAME_KEY = 'bookshelf.nickname';
+
     @observable nickname = '';
 
     constructor(private readonly storage: AppStorage) {
+        this.nickname = storage.get(AuthStore.NICKNAME_KEY) ?? '';
         makeObservable(this);
-        this.nickname = storage.get(NICKNAME_KEY) ?? '';
     }
 
     @computed get isAuthorized() {
@@ -26,11 +26,11 @@ export class AuthStore {
 
     @action login(nickname: string) {
         this.nickname = nickname;
-        this.storage.set(NICKNAME_KEY, nickname);
+        this.storage.set(AuthStore.NICKNAME_KEY, nickname);
     }
 
     @action logout() {
         this.nickname = '';
-        this.storage.remove(NICKNAME_KEY);
+        this.storage.remove(AuthStore.NICKNAME_KEY);
     }
 }

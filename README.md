@@ -67,7 +67,7 @@ src/
   app/                 app shell: app.view/controller, header/ (application-wide sticky header)
   features/
     auth/              auth.store, login.form, login.controller, login.view
-    books/             dto, model, gateway, repository, list + add controllers/views, new.book.form
+    books/             dto, model, gateway, repository, books.list (controller/view), book.add (controller/view/form)
   shared/              reusable, feature-agnostic code
     api/               orval output, axios mutator, error messages
     di/                ContainerProvider + useController (controller lifecycle)
@@ -96,7 +96,7 @@ src/
 - **No logic in TSX.** Conditional rendering goes through `Show` (a `.ts` primitive that receives a boolean from
   the controller). DOM events are turned into plain values in `shared/ui/dom.events.ts`. Tabs receive ready-made
   `select()` callbacks from the VM.
-- **Validation** is declarative and uses class-validator on observable form models (`LoginForm`, `NewBookForm`)
+- **Validation** is declarative and uses class-validator on observable form models (`LoginForm`, `BookAddForm`)
   and on API records (`BookModel`). A field's error appears once the field has been edited or a submit was
   attempted.
 - Nicknames are lower-cased, so "Appako" and "appako" open the same shelf.

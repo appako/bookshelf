@@ -3,11 +3,11 @@ import { injectable } from 'tsyringe';
 import { AsyncState } from '~/shared/mobx/async.state';
 import { Controller } from '~/shared/mobx/controller.base';
 import { BooksRepository } from './books.repository';
-import { NewBookForm } from './new.book.form';
+import { BookAddForm } from './book.add.form';
 
 @injectable()
 export class BookAddController extends Controller {
-    readonly form = new NewBookForm();
+    readonly form = new BookAddForm();
     private readonly saving = new AsyncState();
 
     constructor(private readonly repository: BooksRepository) {

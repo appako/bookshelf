@@ -44,13 +44,13 @@ export class BooksRepository {
 
     async add(book: NewBookDto): Promise<void> {
         const response = await this.gateway.addBook(this.auth.user, book);
-        assertOk(response, 'The book was not saved, please try again');
+        BooksRepository.assertOk(response, 'The book was not saved, please try again');
         await this.reloadAll();
     }
 
     async clear(): Promise<void> {
         const response = await this.gateway.reset(this.auth.user);
-        assertOk(response, 'The books were not cleared, please try again');
+        BooksRepository.assertOk(response, 'The books were not cleared, please try again');
         await this.reloadAll();
     }
 
@@ -67,30 +67,30 @@ export class BooksRepository {
 
     private async fetch(scope: BooksScope, user: string): Promise<BookModel[]> {
         const payload = scope === 'all' ? await this.gateway.getAll(user) : await this.gateway.getPrivate(user);
-        return toBookModels(payload);
+        return BooksRepository.toBookModels(payload);
     }
-}
 
-function assertOk(response: StatusResponseDto | undefined, message: string) {
-    if (response?.status !== 'ok') {
-        throw new Error(message);
-    }
-}
-
-// the API stores any POST body as is, so `{}` and other junk records do come back
-function toBookModels(payload: unknown): BookModel[] {
-    if (!Array.isArray(payload)) {
-        throw new Error('Unexpected response from the books API');
-    }
-    return payload.flatMap((plain: unknown, index) => {
-        if (typeof plain !== 'object' || plain === null) return [];
-        const book = plainToModel(BookModel, plain);
-        const errors = validateModel(book);
-        if (Object.keys(errors).length > 0) {
-            console.debug('[BooksRepository] skipping invalid book', plain, errors);
-            return [];
+    private static assertOk(response: StatusResponseDto | undefined, message: string) {
+        if (response?.status !== 'ok') {
+            throw new Error(message);
         }
-        book.key = book.id === undefined ? `idx:${index}` : `id:${book.id}`;
-        return [book];
-    });
+    }
+
+    // the API stores any POST body as is, so `{}` and other junk records do come back
+    private static toBookModels(payload: unknown): BookModel[] {
+        if (!Array.isArray(payload)) {
+            throw new Error('Unexpected response from the books API');
+        }
+        return payload.flatMap((plain: unknown, index) => {
+            if (typeof plain !== 'object' || plain === null) return [];
+            const book = plainToModel(BookModel, plain);
+            const errors = validateModel(book);
+            if (Object.keys(errors).length > 0) {
+                console.debug('[BooksRepository] skipping invalid book', plain, errors);
+                return [];
+            }
+            book.key = book.id === undefined ? `idx:${index}` : `id:${book.id}`;
+            return [book];
+        });
+    }
 }

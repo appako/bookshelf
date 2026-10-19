@@ -6,13 +6,13 @@ import { BooksRepository, type BooksScope } from './books.repository';
 
 export type BookItem = { key: string; title: string };
 
-const SCOPES: { id: BooksScope; label: string; emptyText: string }[] = [
-    { id: 'all', label: 'All books', emptyText: 'No books yet' },
-    { id: 'private', label: 'Private books', emptyText: 'You have not added any books yet' },
-];
-
 @injectable()
 export class BooksListController extends Controller {
+    private static readonly SCOPES: { id: BooksScope; label: string; emptyText: string }[] = [
+        { id: 'all', label: 'All books', emptyText: 'No books yet' },
+        { id: 'private', label: 'Private books', emptyText: 'You have not added any books yet' },
+    ];
+
     @observable scope: BooksScope = 'all';
 
     constructor(private readonly repository: BooksRepository) {
@@ -31,7 +31,7 @@ export class BooksListController extends Controller {
     }
 
     @computed get tabs(): TabItem[] {
-        return SCOPES.map(({ id, label }) => ({
+        return BooksListController.SCOPES.map(({ id, label }) => ({
             id,
             label,
             isActive: id === this.scope,
@@ -46,7 +46,7 @@ export class BooksListController extends Controller {
     @computed get statusText(): string {
         if (this.state.isError) return `Could not load books: ${this.state.error}`;
         if (this.books === undefined) return 'Loading…';
-        if (this.books.length === 0) return SCOPES.find(scope => scope.id === this.scope)!.emptyText;
+        if (this.books.length === 0) return this.emptyText;
         return '';
     }
 
@@ -74,5 +74,9 @@ export class BooksListController extends Controller {
 
     private get state() {
         return this.repository.states[this.scope];
+    }
+
+    private get emptyText() {
+        return BooksListController.SCOPES.find(scope => scope.id === this.scope)!.emptyText;
     }
 }

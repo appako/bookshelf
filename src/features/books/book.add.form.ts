@@ -3,7 +3,7 @@ import { action, makeObservable, observable } from 'mobx';
 import { FormBase } from '~/shared/validation/form.base';
 import type { NewBookDto } from './books.dto';
 
-export class NewBookForm extends FormBase {
+export class BookAddForm extends FormBase {
     @observable
     @MaxLength(120, { message: 'Up to 120 characters' })
     @Matches(/\S/, { message: 'Enter the title' })
