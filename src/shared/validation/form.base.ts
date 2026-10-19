@@ -1,10 +1,6 @@
 import { action, computed, makeObservable, observable } from 'mobx';
 import { validateModel } from './validate.model';
 
-/**
- * Observable form model validated by class-validator decorators declared on subclass fields.
- * A field's error becomes visible once the field was edited or a submit was attempted.
- */
 export abstract class FormBase {
     @observable.shallow private touched = new Set<string>();
     @observable private submitAttempted = false;

@@ -6,7 +6,7 @@ function requireEnv(name: keyof ImportMetaEnv): string {
     return value;
 }
 
-/** Read lazily, so unit tests (which never hit the network) don't depend on `.env`. */
+// lazy, so tests (which never hit the network) don't depend on .env
 export const appConfig = {
     get apiBase() {
         return requireEnv('VITE_API_BASE');

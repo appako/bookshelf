@@ -9,7 +9,7 @@ import './styles.css';
 
 configure({ enforceActions: 'always' });
 
-// fail fast with a readable message when .env is missing
+// fail fast when .env is missing
 void appConfig.apiBase;
 
 createRoot(document.getElementById('root')!).render(

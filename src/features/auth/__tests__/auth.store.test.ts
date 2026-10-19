@@ -13,7 +13,7 @@ describe('AuthStore', () => {
     it('logs in and restores the session after reload', () => {
         container.resolve(AuthStore).login('appako');
 
-        container.clearInstances(); // "reload": a brand-new store reads persisted storage
+        container.clearInstances();
         const restored = container.resolve(AuthStore);
 
         expect(restored.isAuthorized).toBe(true);

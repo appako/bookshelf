@@ -1,6 +1,5 @@
 import { singleton } from 'tsyringe';
 
-/** Thin wrapper over localStorage: injectable by class and tolerant to disabled storage. */
 @singleton()
 export class AppStorage {
     get(key: string): string | undefined {

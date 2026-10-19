@@ -4,9 +4,8 @@ import { ContainerProvider } from '~/shared/di/container';
 import { registerFakeBooksGateway } from '~/test/fake.books.gateway';
 import { AppView } from '../app.view';
 
-/** Smoke test: views only wire controllers to markup, the whole flow works through the real UI. */
 describe('AppView', () => {
-    it('logs in, lists books, adds a book and updates the header counter', async () => {
+    it('logs in, lists books, adds a book, updates the header counter and clears own books', async () => {
         registerFakeBooksGateway();
         render(
             <ContainerProvider>
@@ -30,5 +29,11 @@ describe('AppView', () => {
         await act(() => fireEvent.click(screen.getByRole('tab', { name: 'Private books' })));
         expect(screen.queryByText('Isaac Asimov: I, Robot')).toBeNull();
         expect(screen.getByText('Frank Herbert: Dune')).toBeTruthy();
+
+        fireEvent.click(screen.getByRole('button', { name: 'Clear my books' }));
+        fireEvent.click(screen.getByRole('button', { name: 'Yes, clear' }));
+
+        expect(await screen.findByText('Your books: 0')).toBeTruthy();
+        expect(screen.getByText('You have not added any books yet')).toBeTruthy();
     });
 });

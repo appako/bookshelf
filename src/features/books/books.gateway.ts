@@ -1,8 +1,7 @@
 import { singleton } from 'tsyringe';
-import { authAddBook, authGetAllBooks, authGetPrivateBooks } from '~/shared/api/generated/books.api';
-import type { AddBookResponseDto, NewBookDto } from './books.dto';
+import { authAddBook, authClean, authGetAllBooks, authGetPrivateBooks } from '~/shared/api/generated/books.api';
+import type { NewBookDto, StatusResponseDto } from './books.dto';
 
-/** Transport only: generated API calls in, raw DTOs out. Lists are `unknown` until validated by the repository. */
 @singleton()
 export class BooksGateway {
     getAll(user: string): Promise<unknown> {
@@ -13,7 +12,11 @@ export class BooksGateway {
         return authGetPrivateBooks(user);
     }
 
-    addBook(user: string, book: NewBookDto): Promise<AddBookResponseDto> {
+    addBook(user: string, book: NewBookDto): Promise<StatusResponseDto> {
         return authAddBook(user, book);
+    }
+
+    reset(user: string): Promise<StatusResponseDto> {
+        return authClean(user);
     }
 }

@@ -19,7 +19,6 @@ export class LoginForm extends FormBase {
         this.markTouched('nickname');
     }
 
-    /** Nicknames are case-insensitive for the user, so "Appako" and "appako" share one shelf. */
     toNickname() {
         return this.nickname.toLowerCase();
     }

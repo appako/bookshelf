@@ -5,7 +5,6 @@ import { registerFakeBooksGateway } from './fake.books.gateway';
 
 export const TEST_USER = 'appako';
 
-/** Real stores/repositories/controllers wired by the DI container; only the network edge is faked. */
 export function setupShelf() {
     const gateway = registerFakeBooksGateway();
     const auth = container.resolve(AuthStore);
@@ -13,5 +12,4 @@ export function setupShelf() {
     return { gateway, auth, repository: container.resolve(BooksRepository) };
 }
 
-/** Lets pending promise callbacks (fake responses, `.then` chains) run. */
 export const flush = () => new Promise(resolve => setTimeout(resolve, 0));

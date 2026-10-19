@@ -1,10 +1,6 @@
 type Disposer = () => void;
 
-/**
- * Base for local (per-component) controllers.
- * `init()` / `dispose()` are driven by `useController`; both may run more than once (React StrictMode),
- * so everything started in `onInit` must be registered via `autoDispose` and be safe to start again.
- */
+// init/dispose may run twice under StrictMode: whatever onInit starts must go through autoDispose
 export abstract class Controller {
     private disposers: Disposer[] = [];
 

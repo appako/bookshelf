@@ -12,7 +12,7 @@ Requirements: Node `^20.19` or `>=22.12`, npm.
 npm install
 cp .env.example .env     # VITE_API_BASE=https://tdd.demo.reaktivate.com
 npm run dev              # http://localhost:5173 — enter any nickname to open your shelf
-npm test                 # 43 tests, ~1.5 s
+npm test                 # 49 tests, ~1.5 s
 ```
 
 | Script              | What it does                                                              |
@@ -43,7 +43,9 @@ npm test                 # 43 tests, ~1.5 s
 - [x] A sticky, **application-wide header** with the "Your books: N" counter (the number of private books), the
       current nickname and log out. It updates as soon as a book is added anywhere in the app.
 
-**Extra:** a login screen for the API "user" nickname, persisted in `localStorage`.
+**Extra:** a login screen for the API "user" nickname, persisted in `localStorage`, and **Clear my books** in
+the header. It calls `PUT /reset` after an inline "Yes, clear / Cancel" confirmation, then refreshes the counter
+and the lists.
 
 ## Architecture
 
@@ -111,11 +113,11 @@ the network edge is replaced, by an in-memory `FakeBooksGateway` that reproduces
 | FormBase       | errors shown after a field is edited or a submit is attempted, reactive re-validation                                               |
 | AuthStore      | login and logout, session restored after a reload                                                                                   |
 | Login          | nickname validation messages, lower-casing                                                                                          |
-| Repository     | DTO → model mapping and keys, malformed records skipped, non-array response, add + refresh, reset                                   |
+| Repository     | DTO → model mapping and keys, malformed records skipped, non-array response, add + refresh, clear + refresh, reset                  |
 | Books list     | "Author: Name" rows, tabs are mutually exclusive, race condition, error + retry, rows kept while refreshing, dispose, render counts |
 | Add book       | validation, whitespace-only values, trimmed payload, double-submit guard, error keeps the input                                     |
-| Header and App | counter loading and update after add, logout, login/shelf switch, data reset on logout                                              |
-| `AppView`      | one RTL smoke test of the whole flow: login → list → add → counter → Private tab                                                    |
+| Header and App | counter loading and update after add, clear: disabled state, confirm/cancel, refresh, error; logout, data reset on logout           |
+| `AppView`      | one RTL smoke test of the whole flow: login → list → add → counter → Private tab → clear                                            |
 
 ## API notes
 
@@ -131,6 +133,7 @@ alone:
   validates the form and skips malformed records when reading.
 - The original sample posted to `/v1/books/{user}/books`, which returns `404`. The spec path `/v1/books/{user}/`
   is used instead.
-- `PUT /v1/books/{user}/reset` has the description "Add new", copied from POST, but it actually resets the user's data.
+- `PUT /v1/books/{user}/reset` has the description "Add new", copied from POST, but it actually deletes the books
+  the user added. The seed books stay.
 - Every new user starts with three shared seed books (`ownerId: "postnikov"`). "Private" lists only the books
   that user added.

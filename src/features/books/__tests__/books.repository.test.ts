@@ -74,3 +74,23 @@ describe('BooksRepository', () => {
         expect(repository.states.private.status).toBe('idle');
     });
 });
+
+describe('BooksRepository.clear', () => {
+    it("removes the user's own books and refreshes both scopes", async () => {
+        const { gateway, repository } = setupShelf();
+        await repository.add({ name: 'Dune', author: 'Frank Herbert' });
+
+        await repository.clear();
+
+        expect(gateway.reset).toHaveBeenCalledWith(TEST_USER);
+        expect(repository.privateCount).toBe(0);
+        expect(repository.books('all')).toHaveLength(3);
+    });
+
+    it('fails when the API does not confirm the reset', async () => {
+        const { gateway, repository } = setupShelf();
+        gateway.reset.mockResolvedValueOnce({});
+
+        await expect(repository.clear()).rejects.toThrow('The books were not cleared');
+    });
+});

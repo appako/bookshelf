@@ -58,7 +58,6 @@ export class BooksListController extends Controller {
         return this.state.isError;
     }
 
-    /** Rows stay on screen while a loaded scope is re-fetched. */
     @computed get isRefreshing() {
         return this.state.isLoading && this.books !== undefined;
     }

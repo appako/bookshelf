@@ -4,7 +4,6 @@ import { AppStorage } from '~/shared/storage/app.storage';
 
 const NICKNAME_KEY = 'bookshelf.nickname';
 
-/** App-wide session: the nickname is the API "user" path segment. Persisted between reloads. */
 @singleton()
 export class AuthStore {
     @observable nickname = '';
@@ -18,7 +17,6 @@ export class AuthStore {
         return this.nickname !== '';
     }
 
-    /** API user; only valid inside the authorized part of the app. */
     get user(): string {
         if (!this.isAuthorized) {
             throw new Error('Not authorized');

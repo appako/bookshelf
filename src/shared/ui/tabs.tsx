@@ -5,7 +5,6 @@ export type TabItem = {
     select: () => void;
 };
 
-/** Mutually exclusive switch; selection logic lives in the controller that builds `items`. */
 export function Tabs({ items, label }: { items: TabItem[]; label: string }) {
     return (
         <div className="tabs" role="tablist" aria-label={label}>

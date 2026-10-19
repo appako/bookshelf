@@ -5,15 +5,13 @@ import { AsyncState } from '~/shared/mobx/async.state';
 import { plainToModel } from '~/shared/validation/plain.to.model';
 import { validateModel } from '~/shared/validation/validate.model';
 import { BookModel } from './book.model';
-import type { NewBookDto } from './books.dto';
+import type { NewBookDto, StatusResponseDto } from './books.dto';
 import { BooksGateway } from './books.gateway';
 
 export type BooksScope = 'all' | 'private';
 
-/** App-wide books data (shared by the list and the header counter). Holds PM, talks DTO to the gateway. */
 @singleton()
 export class BooksRepository {
-    /** `undefined` until the scope is loaded for the first time. */
     @observable.shallow private lists: Record<BooksScope, BookModel[] | undefined> = {
         all: undefined,
         private: undefined,
@@ -44,13 +42,16 @@ export class BooksRepository {
         );
     }
 
-    /** Saves the book, then refreshes both scopes (the new book shows up in "all" and "private"). */
     async add(book: NewBookDto): Promise<void> {
         const response = await this.gateway.addBook(this.auth.user, book);
-        if (response?.status !== 'ok') {
-            throw new Error('The book was not saved, please try again');
-        }
-        await Promise.all([this.load('all'), this.load('private')]);
+        assertOk(response, 'The book was not saved, please try again');
+        await this.reloadAll();
+    }
+
+    async clear(): Promise<void> {
+        const response = await this.gateway.reset(this.auth.user);
+        assertOk(response, 'The books were not cleared, please try again');
+        await this.reloadAll();
     }
 
     @action reset() {
@@ -60,13 +61,23 @@ export class BooksRepository {
         this.states.private.reset();
     }
 
+    private async reloadAll() {
+        await Promise.all([this.load('all'), this.load('private')]);
+    }
+
     private async fetch(scope: BooksScope, user: string): Promise<BookModel[]> {
         const payload = scope === 'all' ? await this.gateway.getAll(user) : await this.gateway.getPrivate(user);
         return toBookModels(payload);
     }
 }
 
-/** Validates raw records and maps them to PM; malformed records (e.g. `{}` — the API accepts any body) are skipped. */
+function assertOk(response: StatusResponseDto | undefined, message: string) {
+    if (response?.status !== 'ok') {
+        throw new Error(message);
+    }
+}
+
+// the API stores any POST body as is, so `{}` and other junk records do come back
 function toBookModels(payload: unknown): BookModel[] {
     if (!Array.isArray(payload)) {
         throw new Error('Unexpected response from the books API');

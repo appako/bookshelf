@@ -5,7 +5,7 @@ type Props = {
     onClick?: () => void;
     type?: 'button' | 'submit';
     disabled?: boolean;
-    variant?: 'primary' | 'ghost';
+    variant?: 'primary' | 'ghost' | 'danger';
 };
 
 export function Button({ children, onClick, type = 'button', disabled, variant = 'primary' }: Props) {

@@ -6,8 +6,7 @@ export default defineConfig({
     plugins: [
         react({
             tsDecorators: true,
-            // esbuild/oxc can't emit `design:paramtypes`, so TS is compiled by SWC everywhere
-            // (dev, build and vitest) — tsyringe resolves constructor dependencies from that metadata.
+            // oxc/esbuild can't emit decorator metadata, which tsyringe needs to resolve constructor deps
             useAtYourOwnRisk_mutateSwcOptions(options) {
                 options.jsc ??= {};
                 options.jsc.transform = { ...options.jsc.transform, legacyDecorator: true, decoratorMetadata: true };

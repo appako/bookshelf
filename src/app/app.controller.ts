@@ -15,7 +15,6 @@ export class AppController extends Controller {
     }
 
     protected onInit() {
-        // another nickname means another shelf: never show the previous user's books
         this.autoDispose(
             reaction(
                 () => this.auth.nickname,

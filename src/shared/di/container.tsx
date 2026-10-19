@@ -8,7 +8,6 @@ export function ContainerProvider({ value = container, children }: PropsWithChil
     return <ContainerContext.Provider value={value}>{children}</ContainerContext.Provider>;
 }
 
-/** One controller instance per mounted component; `init` on mount, `dispose` on unmount. */
 export function useController<T extends Controller>(token: InjectionToken<T>): T {
     const di = useContext(ContainerContext);
     const [controller] = useState(() => di.resolve(token));

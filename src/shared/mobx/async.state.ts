@@ -3,10 +3,7 @@ import { getErrorMessage } from '~/shared/api/error.message';
 
 export type AsyncStatus = 'idle' | 'loading' | 'done' | 'error';
 
-/**
- * Status of an async operation. The latest `run()` wins: results of superseded or reset runs are dropped,
- * and success is applied together with the status change in one action (one re-render).
- */
+// latest run wins: results of superseded or reset runs are dropped
 export class AsyncState {
     @observable status: AsyncStatus = 'idle';
     @observable error = '';
@@ -25,7 +22,6 @@ export class AsyncState {
         return this.status === 'error';
     }
 
-    /** Resolves to `true` only when this run completed successfully and is still the latest one. */
     async run<T>(task: () => Promise<T>, onSuccess?: (result: T) => void): Promise<boolean> {
         const runId = this.start();
         try {

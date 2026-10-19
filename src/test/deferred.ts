@@ -1,4 +1,3 @@
-/** A promise resolved/rejected manually — lets tests control the order of async responses. */
 export function deferred<T>() {
     let resolve!: (value: T) => void;
     let reject!: (error: unknown) => void;
