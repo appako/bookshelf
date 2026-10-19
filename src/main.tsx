@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+
 import { configure } from 'mobx';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';

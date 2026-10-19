@@ -12,7 +12,7 @@ Requirements: Node `^20.19` or `>=22.12`, npm.
 npm install
 cp .env.example .env     # VITE_API_BASE=https://tdd.demo.reaktivate.com
 npm run dev              # http://localhost:5173 — enter any nickname to open your shelf
-npm test                 # 49 tests, ~1.5 s
+npm test                 # 49 tests, ~2.5 s
 ```
 
 | Script              | What it does                                                              |
